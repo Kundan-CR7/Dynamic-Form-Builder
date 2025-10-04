@@ -3,6 +3,9 @@ import cors from "cors";
 import "dotenv/config"; // Loads .env file
 import OpenAI from "openai";
 
+
+
+
 // --- Initialize Express App ---
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -10,6 +13,8 @@ const PORT = process.env.PORT || 3001;
 // --- Middleware ---
 app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(express.json()); // Enable parsing of JSON request bodies
+
+console.log("API Key being used:", process.env.OPENROUTER_API_KEY);
 
 // --- OpenRouter Client Configuration ---
 const openrouter = new OpenAI({
@@ -45,7 +50,7 @@ app.post("/api/generate-schema", async (req, res) => {
     `;
 
     const completion = await openrouter.chat.completions.create({
-      model: "mistralai/mistral-7b-instruct",
+      model: "mistralai/mistral-7b-instruct:free",
       messages: [
         { role: "system", content: systemPrompt },
         {
