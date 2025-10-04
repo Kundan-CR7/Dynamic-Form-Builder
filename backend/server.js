@@ -9,10 +9,24 @@ import { PrismaClient } from "@prisma/client";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Health check endpoint for deployment
+app.get("/health", (req, res) => {
+  res.status(200).json({ 
+    status: "OK", 
+    timestamp: new Date().toISOString(),
+    message: "Dynamic Form Builder API is running! 🚀"
+  });
+});
 
 console.log("API Key being used:", process.env.OPENROUTER_API_KEY);
 
-app.use(cors());
+// Configure CORS for deployment
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-frontend-domain.com'] // Replace with your actual frontend domain
+    : ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Initialize OpenAI (OpenRouter)
@@ -20,7 +34,7 @@ const openrouter = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY,
   defaultHeaders: {
-    "HTTP-Referer": "http://localhost:5173",
+    "HTTP-Referer": process.env.FRONTEND_URL || "http://localhost:5173",
     "X-Title": "AI Dynamic Form Builder",
   },
 });
