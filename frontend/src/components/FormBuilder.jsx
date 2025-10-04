@@ -4,6 +4,8 @@ import validator from "@rjsf/validator-ajv8";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
+console.log(import.meta.env.VITE_API_URL)
+
 export default function FormBuilder() {
   const [description, setDescription] = useState("");
   const [formSchema, setFormSchema] = useState(null);
